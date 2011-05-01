@@ -11,6 +11,7 @@ Getting started
 
 Then load the library like this:
 
+```php
 	require_once("freetag/freetag.class.php");
 
 	$freetag_options = array (
@@ -22,6 +23,7 @@ Then load the library like this:
 		);
 
 	$freetag = new freetag($freetag_options);
+```
 
 Documentation
 --------------
@@ -59,18 +61,3 @@ From v0.201 to v0.202:
 * Untar the package to a directory
 * Change your include() statements to the new directory
 * Run the  update_0.201_to_0.202.sql script on your freetag database to add the new indexes: <code>mysql -u <username> -p <databasename> <  update_0.201_to_0.202.sql</code>
-
-Licensing
----------
-
-Freetag
-&copy; 2004-2006 Gordon Luk (gluk at getluky dot net)
-http://www.getluky.net/
-Released under both BSD and GNU Lesser GPL library license.
-For complete Freetag licensing terms, see license.txt
-
-ADOdb library
-&copy; 2000-2004 John Lim (jlim at natsoft dot com dot my)
-http://adodb.sourceforge.net/
-Released under both BSD and GNU Lesser GPL library license. 
-For complete ADOdb licensing terms, see adodb/license.txt
