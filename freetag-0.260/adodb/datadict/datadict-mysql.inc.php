@@ -1,7 +1,7 @@
 <?php
 
 /**
-  V4.61 24 Feb 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V5.11 5 May 2010   (c) 2000-2010 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -80,8 +80,8 @@ class ADODB2_mysql extends ADODB_DataDict {
 	{
 		switch(strtoupper($meta)) {
 		case 'C': return 'VARCHAR';
-		case 'XL':
-		case 'X': return 'LONGTEXT';
+		case 'XL':return 'LONGTEXT';
+		case 'X': return 'TEXT';
 		
 		case 'C2': return 'VARCHAR';
 		case 'X2': return 'LONGTEXT';
@@ -89,6 +89,7 @@ class ADODB2_mysql extends ADODB_DataDict {
 		case 'B': return 'LONGBLOB';
 			
 		case 'D': return 'DATE';
+		case 'TS':
 		case 'T': return 'DATETIME';
 		case 'L': return 'TINYINT';
 		
@@ -107,7 +108,7 @@ class ADODB2_mysql extends ADODB_DataDict {
 	}
 	
 	// return string must begin with space
-	function _CreateSuffix($fname,$ftype,$fnotnull,$fdefault,$fautoinc,$fconstraint,$funsigned)
+	function _CreateSuffix($fname,&$ftype,$fnotnull,$fdefault,$fautoinc,$fconstraint,$funsigned)
 	{	
 		$suffix = '';
 		if ($funsigned) $suffix .= ' UNSIGNED';

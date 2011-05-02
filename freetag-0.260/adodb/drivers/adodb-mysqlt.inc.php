@@ -1,7 +1,7 @@
 <?php
 
 /*
-V4.61 24 Feb 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+V5.11 5 May 2010   (c) 2000-2010 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -30,6 +30,23 @@ class ADODB_mysqlt extends ADODB_mysql {
 	global $ADODB_EXTENSION; if ($ADODB_EXTENSION) $this->rsPrefix .= 'ext_';
 	}
 	
+	/* set transaction mode
+	
+	SET [GLOBAL | SESSION] TRANSACTION ISOLATION LEVEL
+{ READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE }
+
+	*/
+	function SetTransactionMode( $transaction_mode ) 
+	{
+		$this->_transmode  = $transaction_mode;
+		if (empty($transaction_mode)) {
+			$this->Execute('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+			return;
+		}
+		if (!stristr($transaction_mode,'isolation')) $transaction_mode = 'ISOLATION LEVEL '.$transaction_mode;
+		$this->Execute("SET SESSION TRANSACTION ".$transaction_mode);
+	}
+	
 	function BeginTrans()
 	{	  
 		if ($this->transOff) return true;
@@ -45,18 +62,26 @@ class ADODB_mysqlt extends ADODB_mysql {
 		if (!$ok) return $this->RollbackTrans();
 		
 		if ($this->transCnt) $this->transCnt -= 1;
-		$this->Execute('COMMIT');
+		$ok = $this->Execute('COMMIT');
 		$this->Execute('SET AUTOCOMMIT=1');
-		return true;
+		return $ok ? true : false;
 	}
 	
 	function RollbackTrans()
 	{
 		if ($this->transOff) return true;
 		if ($this->transCnt) $this->transCnt -= 1;
-		$this->Execute('ROLLBACK');
+		$ok = $this->Execute('ROLLBACK');
 		$this->Execute('SET AUTOCOMMIT=1');
-		return true;
+		return $ok ? true : false;
+	}
+	
+	function RowLock($tables,$where='',$col='1 as adodbignore') 
+	{
+		if ($this->transCnt==0) $this->BeginTrans();
+		if ($where) $where = ' where '.$where;
+		$rs = $this->Execute("select $col from $tables $where for update");
+		return !empty($rs); 
 	}
 	
 }
@@ -70,6 +95,7 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 			global $ADODB_FETCH_MODE;
 			$mode = $ADODB_FETCH_MODE;
 		}
+		
 		switch ($mode)
 		{
 		case ADODB_FETCH_NUM: $this->fetchMode = MYSQL_NUM; break;
@@ -86,7 +112,7 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 	
 	function MoveNext()
 	{
-		if (@$this->fields =& mysql_fetch_array($this->_queryID,$this->fetchMode)) {
+		if (@$this->fields = mysql_fetch_array($this->_queryID,$this->fetchMode)) {
 			$this->_currentRow += 1;
 			return true;
 		}
@@ -100,7 +126,7 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 
 class ADORecordSet_ext_mysqlt extends ADORecordSet_mysqlt {	
 
-	function ADORecordSet_ext_mysqli($queryID,$mode=false) 
+	function ADORecordSet_ext_mysqlt($queryID,$mode=false) 
 	{
 		if ($mode === false) { 
 			global $ADODB_FETCH_MODE;
@@ -116,7 +142,7 @@ class ADORecordSet_ext_mysqlt extends ADORecordSet_mysqlt {
 		default: 
 			$this->fetchMode = MYSQL_BOTH; break;
 		}
-	
+		$this->adodbFetchMode = $mode;
 		$this->ADORecordSet($queryID);	
 	}
 	

@@ -12,11 +12,25 @@
  *
  * Last Editor: $Author: jlim $
  * @author Richard Tango-Lowy & Dan Cech
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  *
  * @package axmls
  * @tutorial getting_started.pkg
  */
+ 
+function _file_get_contents($file) 
+{
+ 	if (function_exists('file_get_contents')) return file_get_contents($file);
+	
+	$f = fopen($file,'r');
+	if (!$f) return '';
+	$t = '';
+	
+	while ($s = fread($f,100000)) $t .= $s;
+	fclose($f);
+	return $t;
+}
+
 
 /**
 * Debug on or off
@@ -105,7 +119,7 @@ class dbObject {
 	* NOP
 	*/
 	function dbObject( &$parent, $attributes = NULL ) {
-		$this->parent =& $parent;
+		$this->parent = $parent;
 	}
 	
 	/**
@@ -135,7 +149,7 @@ class dbObject {
 		
 	}
 	
-	function create() {
+	function create(&$xmls) {
 		return array();
 	}
 	
@@ -235,7 +249,7 @@ class dbTable extends dbObject {
 	* @param array $attributes Array of table attributes.
 	*/
 	function dbTable( &$parent, $attributes = NULL ) {
-		$this->parent =& $parent;
+		$this->parent = $parent;
 		$this->name = $this->prefix($attributes['NAME']);
 	}
 	
@@ -348,9 +362,9 @@ class dbTable extends dbObject {
 	* @param array $attributes Index attributes
 	* @return object dbIndex object
 	*/
-	function &addIndex( $attributes ) {
+	function addIndex( $attributes ) {
 		$name = strtoupper( $attributes['NAME'] );
-		$this->indexes[$name] =& new dbIndex( $this, $attributes );
+		$this->indexes[$name] = new dbIndex( $this, $attributes );
 		return $this->indexes[$name];
 	}
 	
@@ -360,9 +374,9 @@ class dbTable extends dbObject {
 	* @param array $attributes Data attributes
 	* @return object dbData object
 	*/
-	function &addData( $attributes ) {
+	function addData( $attributes ) {
 		if( !isset( $this->data ) ) {
-			$this->data =& new dbData( $this, $attributes );
+			$this->data = new dbData( $this, $attributes );
 		}
 		return $this->data;
 	}
@@ -449,10 +463,12 @@ class dbTable extends dbObject {
 	* @return array Options
 	*/
 	function addTableOpt( $opt ) {
-		$this->opts[] = $opt;
-		
+		if(isset($this->currentPlatform)) {
+			$this->opts[$this->parent->db->databaseType] = $opt;
+		}
 		return $this->opts;
 	}
+
 	
 	/**
 	* Generates the SQL that will create the table in the database
@@ -627,7 +643,7 @@ class dbIndex extends dbObject {
 	* @internal
 	*/
 	function dbIndex( &$parent, $attributes = NULL ) {
-		$this->parent =& $parent;
+		$this->parent = $parent;
 		
 		$this->name = $this->prefix ($attributes['NAME']);
 	}
@@ -771,7 +787,7 @@ class dbData extends dbObject {
 	* @internal
 	*/
 	function dbData( &$parent, $attributes = NULL ) {
-		$this->parent =& $parent;
+		$this->parent = $parent;
 	}
 	
 	/**
@@ -921,9 +937,10 @@ class dbData extends dbObject {
 			// check that no required columns are missing
 			if( count( $fields ) < $table_field_count ) {
 				foreach( $table_fields as $field ) {
-					if( ( in_array( 'NOTNULL', $field['OPTS'] ) || in_array( 'KEY', $field['OPTS'] ) ) && !in_array( 'AUTOINCREMENT', $field['OPTS'] ) ) {
-						continue(2);
-					}
+					if (isset( $field['OPTS'] ))
+						if( ( in_array( 'NOTNULL', $field['OPTS'] ) || in_array( 'KEY', $field['OPTS'] ) ) && !in_array( 'AUTOINCREMENT', $field['OPTS'] ) ) {
+							continue(2);
+						}
 				}
 			}
 			
@@ -969,7 +986,7 @@ class dbQuerySet extends dbObject {
 	* @param array $attributes Attributes
 	*/
 	function dbQuerySet( &$parent, $attributes = NULL ) {
-		$this->parent =& $parent;
+		$this->parent = $parent;
 			
 		// Overrides the manual prefix key
 		if( isset( $attributes['KEY'] ) ) {
@@ -1194,7 +1211,7 @@ class dbQuerySet extends dbObject {
 * @tutorial getting_started.pkg
 *
 * @author Richard Tango-Lowy & Dan Cech
-* @version $Revision: 1.11 $
+* @version $Revision: 1.12 $
 *
 * @package axmls
 */
@@ -1284,12 +1301,13 @@ class adoSchema {
 	*
 	* @param object $db ADOdb database connection object.
 	*/
-	function adoSchema( &$db ) {
+	function adoSchema( $db ) {
 		// Initialize the environment
 		$this->mgq = get_magic_quotes_runtime();
-		set_magic_quotes_runtime(0);
+		ini_set("magic_quotes_runtime", 0);
+		#set_magic_quotes_runtime(0);
 		
-		$this->db =& $db;
+		$this->db = $db;
 		$this->debug = $this->db->debug;
 		$this->dict = NewDataDictionary( $this->db );
 		$this->sqlArray = array();
@@ -1428,6 +1446,10 @@ class adoSchema {
 		
 		if ( $returnSchema )
 		{
+			$xmlstring = '';
+			while( $data = fread( $fp, 100000 ) ) {
+				$xmlstring .= $data;
+			}
 			return $xmlstring;
 		}
 		
@@ -1571,6 +1593,7 @@ class adoSchema {
 	* @return array Array of SQL statements or FALSE if an error occurs
 	*/
 	function PrintSQL( $format = 'NONE' ) {
+		$sqlArray = null;
 		return $this->getSQL( $format, $sqlArray );
 	}
 	
@@ -1607,7 +1630,7 @@ class adoSchema {
 	*
 	* @access private
 	*/
-	function &create_parser() {
+	function create_parser() {
 		// Create the parser
 		$xmlParser = xml_parser_create();
 		xml_set_object( $xmlParser, $this );
@@ -1701,6 +1724,13 @@ class adoSchema {
 		return $result;
 	}
 	
+	// compat for pre-4.3 - jlim
+	function _file_get_contents($path)
+	{
+		if (function_exists('file_get_contents')) return file_get_contents($path);
+		return join('',file($path));
+	}
+	
 	/**
 	* Converts an XML schema file to the specified DTD version.
 	*
@@ -1729,7 +1759,7 @@ class adoSchema {
 		}
 		
 		if( $version == $newVersion ) {
-			$result = file_get_contents( $filename );
+			$result = _file_get_contents( $filename );
 			
 			// remove unicode BOM if present
 			if( substr( $result, 0, 3 ) == sprintf( '%c%c%c', 239, 187, 191 ) ) {
@@ -1768,7 +1798,7 @@ class adoSchema {
 					return FALSE;
 				}
 				
-				$schema = file_get_contents( $schema );
+				$schema = _file_get_contents( $schema );
 				break;
 			case 'string':
 			default:
@@ -1779,7 +1809,7 @@ class adoSchema {
 		
 		$arguments = array (
 			'/_xml' => $schema,
-			'/_xsl' => file_get_contents( $xsl_file )
+			'/_xsl' => _file_get_contents( $xsl_file )
 		);
 		
 		// create an XSLT processor
@@ -2164,7 +2194,8 @@ class adoSchema {
 	* @deprecated adoSchema now cleans up automatically.
 	*/
 	function Destroy() {
-		set_magic_quotes_runtime( $this->mgq );
+		ini_set("magic_quotes_runtime", $this->mgq );
+		#set_magic_quotes_runtime( $this->mgq );
 		unset( $this );
 	}
 }
