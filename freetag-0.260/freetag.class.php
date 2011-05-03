@@ -173,13 +173,13 @@ class freetag {
 	 * @return An array of Object ID numbers that reference your original objects.
 	 */ 
 	function get_objects_with_tag($tag, $offset = 0, $limit = 100, $tagger_id = NULL) {
-		if(!isset($tag)) {
+		if (!isset($tag)) {
 			return false;
 		}		
 		$db = $this->db;
 		$tag = $db->qstr($tag, get_magic_quotes_gpc());
 
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		if (isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -219,13 +219,13 @@ class freetag {
 	 * @return An array of Object ID numbers that reference your original objects.
 	 */ 
 	function get_objects_with_tag_all($tag, $tagger_id = NULL) {
-		if(!isset($tag)) {
+		if (!isset($tag)) {
 			return false;
 		}		
 		$db = $this->db;
 		$tag = $db->qstr($tag, get_magic_quotes_gpc());
 
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		if (isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -269,7 +269,7 @@ class freetag {
 		if (count($tagArray) == 0) {
 			return $retarr;
 		}
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -322,12 +322,12 @@ class freetag {
 	 * @return An array of Object ID numbers that reference your original objects.
 	 */ 
 	function get_objects_with_tag_id($tag_id, $offset = 0, $limit = 100, $tagger_id = NULL) {
-		if(!isset($tag_id)) {
+		if (!isset($tag_id)) {
 			return false;
 		}		
 		$db = $this->db;
 
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		if (isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -371,17 +371,17 @@ class freetag {
 	 *	 - 'tagger_id' => The unique ID of the person who tagged the object with this tag.
 	 */ 
 	function get_tags_on_object($object_id, $offset = 0, $limit = 10, $tagger_id = NULL) {
-		if(!isset($object_id)) {
+		if (!isset($object_id)) {
 			return false;
 		}		
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		if (isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
 		}
 		$db = $this->db;
 
-		if($limit <= 0) {
+		if ($limit <= 0) {
 			$limit_sql = "";
 		} else {
 			$limit_sql = "LIMIT $offset, $limit";
@@ -425,7 +425,7 @@ class freetag {
 	 */ 
 
 	function safe_tag($tagger_id, $object_id, $tag) {
-		if(!isset($tagger_id)||!isset($object_id)||!isset($tag)) {
+		if (!isset($tagger_id)||!isset($object_id)||!isset($tag)) {
 			die("safe_tag argument missing");
 			return false;
 		}
@@ -461,7 +461,7 @@ class freetag {
 			AND tag = $normalized_tag
 			";
 		$rs = $db->Execute($sql) or die("Syntax Error: $sql");
-		if($rs->fields['count'] > 0) {
+		if ($rs->fields['count'] > 0) {
 			return true;
 		}
 		// Then see if a raw tag in this form exists.
@@ -470,7 +470,7 @@ class freetag {
 			WHERE raw_tag = $tag
 			";
 		$rs = $db->Execute($sql) or die("Syntax Error: $sql");
-		if(!$rs->EOF) {
+		if (!$rs->EOF) {
 			$tag_id = $rs->fields['id'];
 		} else {
 			// Add new tag! 
@@ -478,7 +478,7 @@ class freetag {
 			$rs = $db->Execute($sql) or die("Syntax Error: $sql");
 			$tag_id = $db->Insert_ID();
 		}
-		if(!($tag_id > 0)) {
+		if (!($tag_id > 0)) {
 			return false;
 		}
 		$sql = "INSERT INTO ${prefix}freetagged_objects
@@ -536,7 +536,7 @@ class freetag {
 	 * @return string Returns the tag in normalized form.
 	 */ 
 	function delete_object_tag($tagger_id, $object_id, $tag) {
-		if(!isset($tagger_id)||!isset($object_id)||!isset($tag)) {
+		if (!isset($tagger_id)||!isset($object_id)||!isset($tag)) {
 			die("delete_object_tag argument missing");
 			return false;
 		}
@@ -544,7 +544,7 @@ class freetag {
 
 		$tag_id = $this->get_raw_tag_id($tag);
 		$prefix = $this->_table_prefix;
-		if($tag_id > 0) {
+		if ($tag_id > 0) {
 
 			$sql = "DELETE FROM ${prefix}freetagged_objects
 				WHERE tagger_id = $tagger_id
@@ -575,7 +575,7 @@ class freetag {
 		$db = $this->db;
 
 		$prefix = $this->_table_prefix;
-		if($object_id > 0) {
+		if ($object_id > 0) {
 			$sql = "DELETE FROM ${prefix}freetagged_objects
 				WHERE 
 				object_id = $object_id
@@ -604,14 +604,14 @@ class freetag {
 	 */ 
 
 	function delete_all_object_tags_for_user($tagger_id, $object_id) {
-		if(!isset($tagger_id)||!isset($object_id)) {
+		if (!isset($tagger_id)||!isset($object_id)) {
 			die("delete_all_object_tags_for_user argument missing");
 			return false;
 		}
 		$db = $this->db;
 
 		$prefix = $this->_table_prefix;
-		if($object_id > 0) {
+		if ($object_id > 0) {
 
 			$sql = "DELETE FROM ${prefix}freetagged_objects
 				WHERE tagger_id = $tagger_id
@@ -637,7 +637,7 @@ class freetag {
 	 * @return string Returns the tag in normalized form.
 	 */ 
 	function get_tag_id($tag) {
-		if(!isset($tag)) {
+		if (!isset($tag)) {
 			die("get_tag_id argument missing");
 			return false;
 		}
@@ -669,7 +669,7 @@ class freetag {
 	 */ 
 
 	function get_raw_tag_id($tag) {
-		if(!isset($tag)) {
+		if (!isset($tag)) {
 			die("get_tag_id argument missing");
 			return false;
 		}
@@ -710,7 +710,7 @@ class freetag {
 	 * @return string Returns the tag in normalized form.
 	 */
 	function tag_object($tagger_id_list, $object_id_list, $tag_string, $skip_updates = 1) {
-		if($tag_string == '') {
+		if ($tag_string == '') {
 			// If an empty string was passed, just return true, don't die.
 			// die("Empty tag string passed");
 			return true;
@@ -784,8 +784,8 @@ class freetag {
 	function _tag_object_array($tagger_id, $object_id, $tagArray) {
 		foreach($tagArray as $tag) {
 			$tag = trim($tag);
-			if(($tag != '') && (strlen($tag) <= $this->_MAX_TAG_LENGTH)) {
-				if(get_magic_quotes_gpc()) {
+			if (($tag != '') && (strlen($tag) <= $this->_MAX_TAG_LENGTH)) {
+				if (get_magic_quotes_gpc()) {
 					$tag = addslashes($tag);
 				}
 				$this->safe_tag($tagger_id, $object_id, $tag);
@@ -811,7 +811,7 @@ class freetag {
 			return $newwords;
 		}
 		# Perform tag parsing
-		if(get_magic_quotes_gpc()) {
+		if (get_magic_quotes_gpc()) {
 			$query = stripslashes(trim($tag_string));
 		} else {
 			$query = trim($tag_string);
@@ -853,7 +853,7 @@ class freetag {
 
 	function get_most_popular_tags($tagger_id = NULL, $offset = 0, $limit = 25) {
 		$db = $this->db;
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		if (isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -906,7 +906,7 @@ class freetag {
 
 	function get_most_recent_objects($tagger_id = NULL, $tag = NULL, $offset = 0, $limit = 25) {
 		$db = $this->db;
-		if(isset($tagger_id)) {
+		if (isset($tagger_id)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -914,7 +914,7 @@ class freetag {
 		$prefix = $this->_table_prefix;
 
 		$sql = "";
-		if(!$tag) {
+		if (!$tag) {
 			$sql = "SELECT DISTINCT object_id, tagged_on FROM
 				${prefix}freetagged_objects
 				WHERE 1
@@ -958,7 +958,7 @@ class freetag {
 	 */
 	function count_tags($tagger_id = NULL, $normalized_version = 0) {
 		$db = $this->db;
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		if (isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -978,7 +978,7 @@ class freetag {
 			";
 
 		$rs = $db->Execute($sql) or die("Syntax Error: $sql");
-		if(!$rs->EOF) {
+		if (!$rs->EOF) {
 			return $rs->fields['count'];
 		}
 		return false;
@@ -1066,7 +1066,7 @@ class freetag {
 	function get_tag_cloud_tags($max = 100, $tagger_id = NULL, $offset = 0) {
 		$db = $this->db;
 
-		if(isset($tagger_id) && ($tagger_id > 0)) {
+		if (isset($tagger_id) && ($tagger_id > 0)) {
 			$tagger_sql = "AND tagger_id = $tagger_id";
 		} else {
 			$tagger_sql = "";
@@ -1173,7 +1173,7 @@ class freetag {
 
 	function similar_tags($tag, $max = 100, $tagger_id = NULL) {
 		$retarr = array();
-		if(!isset($tag)) {
+		if (!isset($tag)) {
 			return $retarr;
 		}
 		$db = $this->db;
