@@ -1044,7 +1044,7 @@ class freetag {
 
 	}
 
-	/*
+	/**
 	 * get_tag_cloud_tags
 	 *
 	 * This is a function built explicitly to set up a page with most popular tags
@@ -1294,7 +1294,7 @@ class freetag {
 	}
 
 
-	/*
+	/**
 	 * Prints debug text if debug is enabled.
 	 *
 	 * @param string The text to output
