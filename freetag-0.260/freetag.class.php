@@ -48,7 +48,6 @@ class freetag {
 	 * @var string The db driver string to pass to ADOdb.
 	 */
 	var $_db_driver = 'mysql';
-
 	/**
 	 * @access private
 	 * @var bool Prints out limited debugging information if true, not fully implemented yet.
@@ -117,7 +116,7 @@ class freetag {
 	 * - ADODB_DIR: directory in which adodb is installed. Change if you don't want to use the bundled version. [default: adodb/]
 	 * - PCONNECT: Whether to use ADODB persistent connections. [default: FALSE]
 	 * 
-	 */ 
+	 */
 	function freetag($options = NULL) {
 
 		$available_options = array('debug', 'db', 'db_driver', 'db_user', 'db_pass', 'db_host', 'db_name', 'table_prefix', 'normalize_tags', 'normalized_valid_chars', 'block_multiuser_tag_on_object', 'append_to_integer', 'MAX_TAG_LENGTH', 'ADODB_DIR', 'PCONNECT');
@@ -423,7 +422,6 @@ class freetag {
 	 *
 	 * @return boolean Returns true if successful, false otherwise. Does not operate as a transaction.
 	 */ 
-
 	function safe_tag($tagger_id, $object_id, $tag) {
 		if (!isset($tagger_id)||!isset($object_id)||!isset($tag)) {
 			die("safe_tag argument missing");
@@ -602,7 +600,6 @@ class freetag {
 	 *
 	 * @return boolean Returns true if successful, false otherwise. It will return true if the tagged object does not exist.
 	 */ 
-
 	function delete_all_object_tags_for_user($tagger_id, $object_id) {
 		if (!isset($tagger_id)||!isset($object_id)) {
 			die("delete_all_object_tags_for_user argument missing");
@@ -667,7 +664,6 @@ class freetag {
 	 *
 	 * @return string Returns the tag in normalized form.
 	 */ 
-
 	function get_raw_tag_id($tag) {
 		if (!isset($tag)) {
 			die("get_tag_id argument missing");
@@ -708,7 +704,7 @@ class freetag {
 	 * @param int Whether to skip the update portion for objects that haven't been tagged. (Default: 1)
 	 *
 	 * @return string Returns the tag in normalized form.
-	 */
+	 */ 
 	function tag_object($tagger_id_list, $object_id_list, $tag_string, $skip_updates = 1) {
 		if ($tag_string == '') {
 			// If an empty string was passed, just return true, don't die.
@@ -780,7 +776,7 @@ class freetag {
 	 * @param array Array of tags to add.
 	 *
 	 * @return boolean True if successful, false otherwise.
-	 */
+	 */ 
 	function _tag_object_array($tagger_id, $object_id, $tagArray) {
 		foreach($tagArray as $tag) {
 			$tag = trim($tag);
@@ -802,8 +798,7 @@ class freetag {
 	 * @param string String to parse.
 	 *
 	 * @return array Returns an array of the raw "tags" parsed according to the freetag settings.
-	 */
-
+	 */ 
 	function _parse_tags($tag_string) {
 		$newwords = array();
 		if ($tag_string == '') {
@@ -849,8 +844,7 @@ class freetag {
 	 * Each element is an associative array with the following elements:
 	 *   - 'tag' => Normalized-form tag
 	 *	 - 'count' => The number of objects tagged with this tag.
-	 */
-
+	 */ 
 	function get_most_popular_tags($tagger_id = NULL, $offset = 0, $limit = 25) {
 		$db = $this->db;
 		if (isset($tagger_id) && ($tagger_id > 0)) {
@@ -902,8 +896,7 @@ class freetag {
 	 * Each element is an associative array with the following elements:
 	 * - 'object_id' => Object id
 	 * - 'tagged_on' => The timestamp of each object id
-	 */
-
+	 */ 
 	function get_most_recent_objects($tagger_id = NULL, $tag = NULL, $offset = 0, $limit = 25) {
 		$db = $this->db;
 		if (isset($tagger_id)) {
@@ -955,7 +948,7 @@ class freetag {
 	 * @param int The unique ID of the person to restrict results to.
 	 *
 	 * @return int Returns the count 
-	 */
+	 */ 
 	function count_tags($tagger_id = NULL, $normalized_version = 0) {
 		$db = $this->db;
 		if (isset($tagger_id) && ($tagger_id > 0)) {
@@ -1006,8 +999,7 @@ class freetag {
 	 * @param int Specify starting record (default: 0)
 	 *
 	 * @return string Returns an HTML snippet that can be used directly as a tag cloud.
-	 */
-
+	 */ 
 	function get_tag_cloud_html($num_tags = 100, $min_font_size = 10, $max_font_size = 20, $font_units = 'px', $span_class = 'cloud_tag', $tag_page_url = '/tag/', $tagger_id = NULL, $offset = 0) {
 		$tag_list = $this->get_tag_cloud_tags($num_tags, $tagger_id, $offset);
 		// Get the maximum qty of tagged objects in the set
@@ -1061,8 +1053,7 @@ class freetag {
 	 *
 	 * @return array Returns an array where the keys are normalized tags, and the
 	 * values are numeric quantity of objects tagged with that tag.
-	 */
-
+	 */ 
 	function get_tag_cloud_tags($max = 100, $tagger_id = NULL, $offset = 0) {
 		$db = $this->db;
 
@@ -1113,7 +1104,7 @@ class freetag {
 	 * @param int Whether to count normalized tags or all raw tags (0 for raw, 1 for normalized, 0 default)
 	 *
 	 * @return int Returns the count
-	 */
+	 */ 
 	function count_unique_tags($tagger_id = NULL, $normalized_version = 0) {
 		return $this->count_tags($tagger_id, $normalized_version);
 	} 
@@ -1138,8 +1129,7 @@ class freetag {
 	 *
 	 * @return array Returns an array where the keys are normalized tags, and the
 	 * values are numeric quantity of objects tagged with that tag.
-	 */
-
+	 */ 
 	function silly_list($max = 100, $tagger_id = NULL) {
 		return $this->get_tag_cloud_tags($max, $tagger_id);
 	}
@@ -1170,7 +1160,6 @@ class freetag {
 	 * values are numeric quantity of objects tagged with BOTH tags, sorted by
 	 * number of occurences of that tag (high to low).
 	 */ 
-
 	function similar_tags($tag, $max = 100, $tagger_id = NULL) {
 		$retarr = array();
 		if (!isset($tag)) {
@@ -1235,7 +1224,7 @@ class freetag {
 	 * - 'strength' => A floating-point strength of match from 0-1.0
 	 * - 'object_id' => Unique ID of the matched object
 	 *
-	 */
+	 */ 
 	function similar_objects($object_id, $threshold = 1, $max_objects = 5, $tagger_id = NULL) {
 		$db = $this->db;
 		$retarr = array();
@@ -1299,7 +1288,7 @@ class freetag {
 	 *
 	 * @param string The text to output
 	 * @return boolean Always returns true
-	 */
+	 */ 
 	function debug_text($text) {
 		if ($this->_debug) {
 			echo "$text<br>\n";
