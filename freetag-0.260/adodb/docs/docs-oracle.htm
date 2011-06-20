@@ -25,7 +25,7 @@ pre {
 <table width=100%><tr><td>
 <h2>Using ADOdb with PHP and Oracle: an advanced tutorial</h2>
 </td><td><div align="right"><img src=cute_icons_for_site/adodb.gif width="88" height="31"></div></tr></table>
-<p><font size="1">(c)2004 John Lim. All rights reserved.</font></p>
+<p><font size="1">(c)2004-2005 John Lim. All rights reserved.</font></p>
 <h3>1. Introduction</h3>
 <p>Oracle is the most popular commercial database used with PHP. There are many ways of accessing Oracle databases in PHP. These include:</p>
 <ul>
@@ -62,7 +62,7 @@ while (OCIFetchInto($stmt,$arr)) {
 <p>This generates the following output:
 <div class=greybg>
 Array ( [0] => 7902 [1] => FORD [2] => ANALYST [3] => 7566 [4] => 03/DEC/81 [5] => 3000 [7] => 20 ) 
-<hr>
+<hr />
   Array ( [0] => 7934 [1] => MILLER [2] => CLERK [3] => 7782 [4] => 23/JAN/82 [5] => 1300 [7] => 10 )
 </div>
 <p>We also have  many higher level PHP libraries that allow you to simplify the above code. The most popular are <a href="http://pear.php.net/">PEAR DB</a> and <a href="http://adodb.sourceforge.net/">ADOdb</a>.  Here are some of the differences between these libraries:</p>
@@ -135,7 +135,7 @@ Array ( [0] => 7902 [1] => FORD [2] => ANALYST [3] => 7566 [4] => 03/DEC/81 [5] 
   <tr valign="top">
     <td>High Speed Extension available</td>
     <td>No</td>
-    <td>Yes. You can install the ADOdb extension, which implements the most frequently used parts of ADOdb as fast C code.</td>
+    <td>Yes. You can install the optional ADOdb extension, which reimplements the most frequently used parts of ADOdb as fast C code. Note that the source code version of ADOdb runs just fine without this extension, and only makes use of the extension if detected.</td>
   </tr>
 </table>
 <p> PEAR DB is good enough for simple web apps. But if you need more power, you can see ADOdb offers more sophisticated functionality. The rest of this article will concentrate on using ADOdb with Oracle. You can find out more about <a href="#connecting">connecting to Oracle</a> later in this guide.</p>
@@ -174,9 +174,6 @@ while (<b>OCIFetchInto</b>($stmt,$arr)) {
     <td><pre><font size="1">$recordset = $db-><b>Execute</b>("select * from emp where empno>:emp", 
                            array('emp' => 7900));
 
-
-
-
 while ($arr = $recordset-><b>FetchRow</b>()) {
 	print_r($arr);
 	echo "&lt;hr>";
@@ -206,12 +203,12 @@ $arr = $db->GetRow("select * from emp where empno=:emp", array('emp' => 7900));
 <pre>
 $arr = $db->GetOne("select ename from emp where empno=:emp", array('emp' => 7900));
 </pre>
-<p>For easy pagination support, we provide the SelectLimit function. The following will perform a select query, limiting it to 100 rows, starting from row 200:
+<p>For easy pagination support, we provide the SelectLimit function. The following will perform a select query, limiting it to 100 rows, starting from row 201 (row 1 being the 1st row):
 <pre>
 $offset = 200; $limitrows = 100;
-$rs = $db->SelectLimit('select * from table', $offset, $limitrows);
+$rs = $db->SelectLimit('select * from table', $limitrows, $offset);
 </pre>
-<p>The $limitrows parameter is optional.
+<p>The $offset parameter is optional.
 <h4>Array Fetch Mode</h4>
 <p>When data is being returned in an array, you can choose the type of array the data is returned in. 
 <ol>
@@ -369,7 +366,7 @@ $db->NLS_DATE_FORMAT =  'RRRR-MM-DD HH24:MI:SS';
 $db->Connect($tns, $user, $pwd);
 </pre>
 <p>Or execute:</p>
-<pre>$sql = &quot;ALTER SESSION SET NLS_DATE_FORMAT = 'RRRR-MM-DD HH24:MI:SS'&quot;;
+<pre>$sql = quot;ALTER SESSION SET NLS_DATE_FORMAT = 'RRRR-MM-DD HH24:MI:SS'&quot;;
 $db-&gt;Execute($sql);
 </pre>
 <p>If you are not concerned about date portability and do not use ADOdb's portability layer, you can use your preferred date format instead.
@@ -475,7 +472,9 @@ $db-&gt;Execute(&quot;insert into atable (f1, f2) values (?,?)&quot;, array(12, 
 <p>or</p>
 <pre> 	$conn-&gt;PConnect('myTNS', 'scott', 'tiger');</pre>
 <p>c. Host Address and SID</p>
-<pre>	$conn-&gt;Connect('192.168.0.1', 'scott', 'tiger', 'SID');</pre>
+<pre>
+	$conn->connectSID = true;	
+	$conn-&gt;Connect('192.168.0.1', 'scott', 'tiger', 'SID');</pre>
 <p>d. Host Address and Service Name</p>
 <pre>	$conn-&gt;Connect('192.168.0.1', 'scott', 'tiger', 'servicename');</pre>
 <p>e. Oracle connection string:
@@ -516,6 +515,14 @@ while ($arr = $rs->FetchRow()) {
 <p>You can retrieve the  error message and error number of the last SQL statement executed from ErrorMsg( ) and ErrorNo( ). You can also <a href=http://phplens.com/adodb/using.custom.error.handlers.and.pear_error.html>define a custom error handler function</a>.
 ADOdb also supports throwing exceptions in PHP5.
 <p>&nbsp;</p>
+<h3>Handling Large Recordsets (added 27 May 2005)</h3>
+The oci8 driver does not support counting the number of records returned in a SELECT statement, so the function RecordCount() 
+is emulated when the global variable $ADODB_COUNTRECS is set to true, which is the default. 
+We emulate this by buffering all the records. This can take up large amounts of memory for big recordsets.
+ Set $ADODB_COUNTRECS to false for the best performance. 
+ <p>
+This variable is checked every time a query is executed, so you can selectively choose which recordsets to count.
+<p>&nbsp;</p>
 <h3>11. Other ADOdb Features</h3>
 <p><a href="http://phplens.com/lens/adodb/docs-datadict.htm">Schema generation</a>. This allows you to define a schema using XML and import it into different RDBMS systems portably.</p>
 <p><a href="http://phplens.com/lens/adodb/docs-perf.htm">Performance monitoring and tracing</a>. Highlights of performance monitoring include identification of poor and suspicious SQL, with explain plan support, and identifying which web pages the SQL ran on.</p>
@@ -526,6 +533,7 @@ ADOdb also supports throwing exceptions in PHP5.
 <h3>13. Resources</h3>
 <ul>
   <li>Oracle's <a href="http://www.oracle.com/technology/pub/articles/php_experts/index.html">Hitchhiker Guide to PHP</a></li>
+  <li>OTN article on <a href=http://www.oracle.com/technology/pub/articles/deployphp/lim_deployphp.html>Optimizing PHP and Oracle</a> by this author.
   <li>Oracle has an excellent <a href="http://www.oracle.com/technology/tech/opensource/php/php_troubleshooting_faq.html">FAQ on PHP</a></li>
   <li>PHP <a href="http://php.net/oci8">oci8</a> manual pages</li>
   <li><a href=http://phplens.com/lens/lensforum/topics.php?id=4>ADOdb forums</a>.

@@ -1,6 +1,6 @@
 <?php
 /*
-V4.61 24 Feb 2005  (c) 2000-2005 John Lim. All rights reserved.
+V5.11 5 May 2010   (c) 2000-2010 John Lim. All rights reserved.
   Released under both BSD license and Lesser GPL library license.
   Whenever there is any discrepancy between the two licenses,
   the BSD license will take precedence.
@@ -58,7 +58,7 @@ class ADODB_informix72 extends ADOConnection {
 	{
 		// alternatively, use older method:
 		//putenv("DBDATE=Y4MD-");
-
+		
 		// force ISO date format
 		putenv('GL_DATE=%Y-%m-%d');
 		
@@ -123,10 +123,10 @@ class ADODB_informix72 extends ADOConnection {
 		return true;
 	}
 
-	function RowLock($tables,$where)
+	function RowLock($tables,$where,$col='1 as adodbignore')
 	{
 		if ($this->_autocommit) $this->BeginTrans();
-		return $this->GetOne("select 1 as ignore from $tables where $where for update");
+		return $this->GetOne("select $col from $tables where $where for update");
 	}
 
 	/*	Returns: the last error message from previous database operation
@@ -147,10 +147,11 @@ class ADODB_informix72 extends ADOConnection {
 	}
 
    
-    function &MetaColumns($table)
+    function MetaColumns($table, $normalize=true)
 	{
 	global $ADODB_FETCH_MODE;
 	
+		$false = false;
 		if (!empty($this->metaColumnsSQL)) {
 			$save = $ADODB_FETCH_MODE;
 			$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
@@ -158,7 +159,7 @@ class ADODB_informix72 extends ADOConnection {
           		$rs = $this->Execute(sprintf($this->metaColumnsSQL,$table));
 			if (isset($savem)) $this->SetFetchMode($savem);
 			$ADODB_FETCH_MODE = $save;
-			if ($rs === false) return false;
+			if ($rs === false) return $false;
 			$rspkey = $this->Execute(sprintf($this->metaPrimaryKeySQL,$table)); //Added to get primary key colno items
 
 			$retarr = array();
@@ -191,14 +192,14 @@ class ADODB_informix72 extends ADOConnection {
 			}
 
 			$rs->Close();
-			$rspKey->Close(); //!eos
+			$rspkey->Close(); //!eos
 			return $retarr;	
 		}
 
-		return false;
+		return $false;
 	}
 	
-   function &xMetaColumns($table)
+   function xMetaColumns($table)
    {
 		return ADOConnection::MetaColumns($table,false);
    }
@@ -218,7 +219,7 @@ class ADODB_informix72 extends ADOConnection {
 
 		$rs = $this->Execute($sql);
 		if (!$rs || $rs->EOF)  return false;
-		$arr =& $rs->GetArray();
+		$arr = $rs->GetArray();
 		$a = array();
 		foreach($arr as $v) {
 			$coldest=$this->metaColumnNames($v["tabname"]);
@@ -283,7 +284,7 @@ class ADODB_informix72 extends ADOConnection {
 	}
 */
 	// returns query ID if successful, otherwise false
-	function _query($sql,$inputarr)
+	function _query($sql,$inputarr=false)
 	{
 	global $ADODB_COUNTRECS;
 	
@@ -361,21 +362,22 @@ class ADORecordset_informix72 extends ADORecordSet {
 		Get column information in the Recordset object. fetchField() can be used in order to obtain information about
 		fields in a certain query result. If the field offset isn't specified, the next field that wasn't yet retrieved by
 		fetchField() is retrieved.	*/
-	function &FetchField($fieldOffset = -1)
+	function FetchField($fieldOffset = -1)
 	{
 		if (empty($this->_fieldprops)) {
 			$fp = ifx_fieldproperties($this->_queryID);
 			foreach($fp as $k => $v) {
 				$o = new ADOFieldObject;
 				$o->name = $k;
-				$arr = split(';',$v); //"SQLTYPE;length;precision;scale;ISNULLABLE"
+				$arr = explode(';',$v); //"SQLTYPE;length;precision;scale;ISNULLABLE"
 				$o->type = $arr[0];
 				$o->max_length = $arr[1];
 				$this->_fieldprops[] = $o;
 				$o->not_null = $arr[4]=="N";
 			}
 		}
-		return $this->_fieldprops[$fieldOffset];
+		$ret = $this->_fieldprops[$fieldOffset];
+		return $ret;
 	}
 
 	function _initrs()

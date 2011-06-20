@@ -1,7 +1,7 @@
 <?php
 
 /**
-  V4.61 24 Feb 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V5.11 5 May 2010   (c) 2000-2010 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -21,6 +21,7 @@ class ADODB2_postgres extends ADODB_DataDict {
 	var $addCol = ' ADD COLUMN';
 	var $quote = '"';
 	var $renameTable = 'ALTER TABLE %s RENAME TO %s'; // at least since 7.1
+	var $dropTable = 'DROP TABLE %s CASCADE';
 	
 	function MetaType($t,$len=-1,$fieldobj=false)
 	{
@@ -99,9 +100,10 @@ class ADODB2_postgres extends ADODB_DataDict {
 		case 'B': return 'BYTEA';
 			
 		case 'D': return 'DATE';
+		case 'TS':
 		case 'T': return 'TIMESTAMP';
 		
-		case 'L': return 'SMALLINT';
+		case 'L': return 'BOOLEAN';
 		case 'I': return 'INTEGER';
 		case 'I1': return 'SMALLINT';
 		case 'I2': return 'INT2';
@@ -134,10 +136,11 @@ class ADODB2_postgres extends ADODB_DataDict {
 			if (($not_null = preg_match('/NOT NULL/i',$v))) {
 				$v = preg_replace('/NOT NULL/i','',$v);
 			}
-			if (preg_match('/^([^ ]+) .*(DEFAULT [^ ]+)/',$v,$matches)) {
+			if (preg_match('/^([^ ]+) .*DEFAULT ([^ ]+)/',$v,$matches)) {
 				list(,$colname,$default) = $matches;
-				$sql[] = $alter . str_replace($default,'',$v);
-				$sql[] = 'ALTER TABLE '.$tabname.' ALTER COLUMN '.$colname.' SET ' . $default;
+				$sql[] = $alter . str_replace('DEFAULT '.$default,'',$v);
+				$sql[] = 'UPDATE '.$tabname.' SET '.$colname.'='.$default;
+				$sql[] = 'ALTER TABLE '.$tabname.' ALTER COLUMN '.$colname.' SET DEFAULT ' . $default;
 			} else {				
 				$sql[] = $alter . $v;
 			}
@@ -147,6 +150,12 @@ class ADODB2_postgres extends ADODB_DataDict {
 			}
 		}
 		return $sql;
+	}
+
+
+	function DropIndexSQL ($idxname, $tabname = NULL)
+	{
+	   return array(sprintf($this->dropIndex, $this->TableName($idxname), $this->TableName($tabname)));
 	}
 	
 	/**
@@ -160,6 +169,7 @@ class ADODB2_postgres extends ADODB_DataDict {
 	 * @param array/ $tableoptions options for the new table see CreateTableSQL, default ''
 	 * @return array with SQL strings
 	 */
+	 /*
 	function AlterColumnSQL($tabname, $flds, $tableflds='',$tableoptions='')
 	{
 		if (!$tableflds) {
@@ -167,6 +177,61 @@ class ADODB2_postgres extends ADODB_DataDict {
 			return array();
 		}
 		return $this->_recreate_copy_table($tabname,False,$tableflds,$tableoptions);
+	}*/
+	
+	function AlterColumnSQL($tabname, $flds, $tableflds='',$tableoptions='')
+	{
+	   // Check if alter single column datatype available - works with 8.0+
+	   $has_alter_column = 8.0 <= (float) @$this->serverInfo['version'];
+	
+	   if ($has_alter_column) {
+	      $tabname = $this->TableName($tabname);
+	      $sql = array();
+	      list($lines,$pkey) = $this->_GenFields($flds);
+	      $alter = 'ALTER TABLE ' . $tabname . $this->alterCol . ' ';
+	      foreach($lines as $v) {
+	         if ($not_null = preg_match('/NOT NULL/i',$v)) {
+	            $v = preg_replace('/NOT NULL/i','',$v);
+	         }
+	         // this next block doesn't work - there is no way that I can see to 
+	         // explicitly ask a column to be null using $flds
+	         else if ($set_null = preg_match('/NULL/i',$v)) {
+	            // if they didn't specify not null, see if they explicitely asked for null
+	            $v = preg_replace('/\sNULL/i','',$v);
+	         }
+	         
+	         if (preg_match('/^([^ ]+) .*DEFAULT ([^ ]+)/',$v,$matches)) {
+	            list(,$colname,$default) = $matches;
+	            $v = preg_replace('/^' . preg_quote($colname) . '\s/', '', $v);
+	            $sql[] = $alter . $colname . ' TYPE ' . str_replace('DEFAULT '.$default,'',$v);
+	            $sql[] = 'ALTER TABLE '.$tabname.' ALTER COLUMN '.$colname.' SET DEFAULT ' . $default;
+	         } 
+	         else {
+	            // drop default?
+	            preg_match ('/^\s*(\S+)\s+(.*)$/',$v,$matches);
+	            list (,$colname,$rest) = $matches;
+	            $sql[] = $alter . $colname . ' TYPE ' . $rest;
+	         }
+	
+	         list($colname) = explode(' ',$v);
+	         if ($not_null) {
+	            // this does not error out if the column is already not null
+	            $sql[] = 'ALTER TABLE '.$tabname.' ALTER COLUMN '.$colname.' SET NOT NULL';
+	         }
+	         if ($set_null) {
+	            // this does not error out if the column is already null
+	            $sql[] = 'ALTER TABLE '.$tabname.' ALTER COLUMN '.$colname.' DROP NOT NULL';
+	         }
+	      }
+	      return $sql;
+	   }
+	
+	   // does not have alter column
+	   if (!$tableflds) {
+	      if ($this->debug) ADOConnection::outp("AlterColumnSQL needs a complete table-definiton for PostgreSQL");
+	      return array();
+	   }
+	   return $this->_recreate_copy_table($tabname,False,$tableflds,$tableoptions);
 	}
 	
 	/**
@@ -214,7 +279,7 @@ class ADODB2_postgres extends ADODB_DataDict {
 				// we need to explicit convert varchar to a number to be able to do an AlterColumn of a char column to a nummeric one
 				if (preg_match('/'.$fld->name.' (I|I2|I4|I8|N|F)/i',$tableflds,$matches) && 
 					in_array($fld->type,array('varchar','char','text','bytea'))) {
-					$copyflds[] = "to_number($fld->name,'S99D99')";
+					$copyflds[] = "to_number($fld->name,'S9999999999999D99')";
 				} else {
 					$copyflds[] = $fld->name;
 				}
@@ -262,7 +327,7 @@ class ADODB2_postgres extends ADODB_DataDict {
 	}
 
 	// return string must begin with space
-	function _CreateSuffix($fname, &$ftype, $fnotnull,$fdefault,$fautoinc,$fconstraint)
+	function _CreateSuffix($fname, &$ftype, $fnotnull,$fdefault,$fautoinc,$fconstraint,$funsigned)
 	{
 		if ($fautoinc) {
 			$ftype = 'SERIAL';
@@ -289,6 +354,20 @@ class ADODB2_postgres extends ADODB_DataDict {
 			return False;
 		}
 		return "DROP SEQUENCE ".$seq;
+	}
+	
+	function RenameTableSQL($tabname,$newname)
+	{
+		if (!empty($this->schema)) {
+			$rename_from = $this->TableName($tabname);
+			$schema_save = $this->schema;
+			$this->schema = false;
+			$rename_to = $this->TableName($newname);
+			$this->schema = $schema_save;
+			return array (sprintf($this->renameTable, $rename_from, $rename_to));
+		}
+
+		return array (sprintf($this->renameTable, $this->TableName($tabname),$this->TableName($newname)));
 	}
 	
 	/*
@@ -354,6 +433,16 @@ CREATE [ UNIQUE ] INDEX index_name ON table
 		$sql[] = $s;
 		
 		return $sql;
+	}
+	
+	function _GetSize($ftype, $ty, $fsize, $fprec)
+	{
+		if (strlen($fsize) && $ty != 'X' && $ty != 'B' && $ty  != 'I' && strpos($ftype,'(') === false) {
+			$ftype .= "(".$fsize;
+			if (strlen($fprec)) $ftype .= ",".$fprec;
+			$ftype .= ')';
+		}
+		return $ftype;
 	}
 }
 ?>

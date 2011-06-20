@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.61 24 Feb 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+V5.11 5 May 2010   (c) 2000-2010 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -147,7 +147,7 @@ class ADODB_ado extends ADOConnection {
 
 */
 	
-	function &MetaTables()
+	function MetaTables()
 	{
 		$arr= array();
 		$dbc = $this->_connectionID;
@@ -169,7 +169,7 @@ class ADODB_ado extends ADOConnection {
 		return $arr;
 	}
 	
-	function &MetaColumns($table)
+	function MetaColumns($table, $normalize=true)
 	{
 		$table = strtoupper($table);
 		$arr = array();
@@ -204,7 +204,7 @@ class ADODB_ado extends ADOConnection {
 
 	
 	/* returns queryID or false */
-	function &_query($sql,$inputarr=false) 
+	function _query($sql,$inputarr=false) 
 	{
 		
 		$dbc = $this->_connectionID;
@@ -221,11 +221,27 @@ class ADODB_ado extends ADOConnection {
 			$oCmd->CommandText = $sql;
 			$oCmd->CommandType = 1;
 
-			foreach($inputarr as $val) {
+      // Map by http://msdn.microsoft.com/library/default.asp?url=/library/en-us/ado270/htm/mdmthcreateparam.asp
+      // Check issue http://bugs.php.net/bug.php?id=40664 !!!
+			while(list(, $val) = each($inputarr)) {
+				$type = gettype($val);
+				$len=strlen($val);
+				if ($type == 'boolean')
+					$this->adoParameterType = 11;
+				else if ($type == 'integer')
+					$this->adoParameterType = 3;
+				else if ($type == 'double')
+					$this->adoParameterType = 5;
+				elseif ($type == 'string')
+					$this->adoParameterType = 202;
+				else if (($val === null) || (!defined($val)))
+					$len=1;
+				else
+					$this->adoParameterType = 130;
+				
 				// name, type, direction 1 = input, len,
-				$this->adoParameterType = 130;
-				$p = $oCmd->CreateParameter('name',$this->adoParameterType,1,strlen($val),$val);
-				//print $p->Type.' '.$p->value;
+        		$p = $oCmd->CreateParameter('name',$this->adoParameterType,1,$len,$val);
+
 				$oCmd->Parameters->Append($p);
 			}
 			$p = false;
@@ -263,6 +279,7 @@ class ADODB_ado extends ADOConnection {
 		$this->transCnt += 1;
 		return true;
 	}
+	
 	function CommitTrans($ok=true) 
 	{ 
 		if (!$ok) return $this->RollbackTrans();
@@ -283,7 +300,9 @@ class ADODB_ado extends ADOConnection {
 
 	function ErrorMsg() 
 	{
+		if (!$this->_connectionID) return "No connection established";
 		$errc = $this->_connectionID->Errors;
+		if (!$errc) return "No Errors object found";
 		if ($errc->Count == 0) return '';
 		$err = $errc->Item($errc->Count-1);
 		return $err->Description;
@@ -344,8 +363,7 @@ class ADORecordSet_ado extends ADORecordSet {
 		$t = $f->Type;
 		$o->type = $this->MetaType($t);
 		$o->max_length = $f->DefinedSize;
-		$o->ado_type = $t;
-		
+		$o->ado_type = $t;	
 
 		//print "off=$off name=$o->name type=$o->type len=$o->max_length<br>";
 		return $o;
@@ -554,8 +572,11 @@ class ADORecordSet_ado extends ADORecordSet {
 			case 135: // timestamp
 				if (!strlen((string)$f->value)) $this->fields[] = false;
 				else {
-					if (!is_numeric($f->value)) $val = variant_date_to_timestamp($f->value);
-					else $val = $f->value;
+					if (!is_numeric($f->value)) # $val = variant_date_to_timestamp($f->value);
+						// VT_DATE stores dates as (float) fractional days since 1899/12/30 00:00:00
+						$val=(float) variant_cast($f->value,VT_R8)*3600*24-2209161600;
+					else 
+						$val = $f->value;
 					$this->fields[] = adodb_date('Y-m-d H:i:s',$val);
 				}
 				break;			
@@ -582,6 +603,16 @@ class ADORecordSet_ado extends ADORecordSet {
 				ADOConnection::outp( '<b>'.$f->Name.': currency type not supported by PHP</b>');
 				$this->fields[] = (float) $f->value;
 				break;
+			case 11: //BIT;
+				$val = "";
+				if(is_bool($f->value))	{
+					if($f->value==true) $val = 1;
+					else $val = 0;
+				}
+				if(is_null($f->value)) $val = null;
+				
+				$this->fields[] = $val;
+				break;
 			default:
 				$this->fields[] = $f->value; 
 				break;
@@ -594,7 +625,7 @@ class ADORecordSet_ado extends ADORecordSet {
 		@$rs->MoveNext(); // @ needed for some versions of PHP!
 		
 		if ($this->fetchMode & ADODB_FETCH_ASSOC) {
-			$this->fields = &$this->GetRowAssoc(ADODB_ASSOC_CASE);
+			$this->fields = $this->GetRowAssoc(ADODB_ASSOC_CASE);
 		}
 		return true;
 	}

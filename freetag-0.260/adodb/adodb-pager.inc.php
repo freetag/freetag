@@ -1,7 +1,7 @@
 <?php
 
 /*
-	V4.61 24 Feb 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+	V5.11 5 May 2010   (c) 2000-2010 John Lim (jlim#natsoft.com). All rights reserved.
 	  Released under both BSD license and Lesser GPL library license. 
 	  Whenever there is any discrepancy between the two licenses, 
 	  the BSD license will take precedence. 
@@ -57,10 +57,10 @@ class ADODB_Pager {
 	//
 	function ADODB_Pager(&$db,$sql,$id = 'adodb', $showPageLinks = false)
 	{
-	global $HTTP_SERVER_VARS,$PHP_SELF,$HTTP_SESSION_VARS,$HTTP_GET_VARS;
+	global $PHP_SELF;
 	
 		$curr_page = $id.'_curr_page';
-		if (empty($PHP_SELF)) $PHP_SELF = $HTTP_SERVER_VARS['PHP_SELF'];
+		if (!empty($PHP_SELF)) $PHP_SELF = htmlspecialchars($_SERVER['PHP_SELF']); // htmlspecialchars() to prevent XSS attacks
 		
 		$this->sql = $sql;
 		$this->id = $id;
@@ -69,12 +69,12 @@ class ADODB_Pager {
 		
 		$next_page = $id.'_next_page';	
 		
-		if (isset($HTTP_GET_VARS[$next_page])) {
-			$HTTP_SESSION_VARS[$curr_page] = $HTTP_GET_VARS[$next_page];
+		if (isset($_GET[$next_page])) {
+			$_SESSION[$curr_page] = (integer) $_GET[$next_page];
 		}
-		if (empty($HTTP_SESSION_VARS[$curr_page])) $HTTP_SESSION_VARS[$curr_page] = 1; ## at first page
+		if (empty($_SESSION[$curr_page])) $_SESSION[$curr_page] = 1; ## at first page
 		
-		$this->curr_page = $HTTP_SESSION_VARS[$curr_page];
+		$this->curr_page = $_SESSION[$curr_page];
 		
 	}
 	
@@ -247,12 +247,12 @@ class ADODB_Pager {
 		$savec = $ADODB_COUNTRECS;
 		if ($this->db->pageExecuteCountRows) $ADODB_COUNTRECS = true;
 		if ($this->cache)
-			$rs = &$this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
+			$rs = $this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
 		else
-			$rs = &$this->db->PageExecute($this->sql,$rows,$this->curr_page);
+			$rs = $this->db->PageExecute($this->sql,$rows,$this->curr_page);
 		$ADODB_COUNTRECS = $savec;
 		
-		$this->rs = &$rs;
+		$this->rs = $rs;
 		if (!$rs) {
 			print "<h3>Query failed: $this->sql</h3>";
 			return;
@@ -265,10 +265,11 @@ class ADODB_Pager {
 		
 		$grid = $this->RenderGrid();
 		$footer = $this->RenderPageCount();
-		$rs->Close();
-		$this->rs = false;
 		
 		$this->RenderLayout($header,$grid,$footer);
+		
+		$rs->Close();
+		$this->rs = false;
 	}
 	
 	//------------------------------------------------------
