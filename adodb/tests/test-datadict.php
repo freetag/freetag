@@ -1,7 +1,7 @@
 <?php
 /*
 
-  V4.61 24 Feb 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V4.81 3 May 2006  (c) 2000-2010 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -13,7 +13,7 @@
 error_reporting(E_ALL);
 include_once('../adodb.inc.php');
 
-foreach(array('sapdb','sybase','mysqlt','access','oci8','postgres','odbc_mssql','odbc','db2','firebird','informix') as $dbType) {
+foreach(array('sapdb','sybase','mysql','access','oci8po','odbc_mssql','odbc','db2','firebird','postgres','informix') as $dbType) {
 	echo "<h3>$dbType</h3><p>";
 	$db = NewADOConnection($dbType);
 	$dict = NewDataDictionary($db);
@@ -21,7 +21,7 @@ foreach(array('sapdb','sybase','mysqlt','access','oci8','postgres','odbc_mssql',
 	if (!$dict) continue;
 	$dict->debug = 1;
 	
-	$opts = array('REPLACE','mysql' => 'TYPE=INNODB', 'oci8' => 'TABLESPACE USERS');
+	$opts = array('REPLACE','mysql' => 'ENGINE=INNODB', 'oci8' => 'TABLESPACE USERS');
 	
 /*	$flds = array(
 		array('id',	'I',								
@@ -47,32 +47,34 @@ foreach(array('sapdb','sybase','mysqlt','access','oci8','postgres','odbc_mssql',
 	
 	$flds = "
 ID            I           AUTO KEY,
-FIRSTNAME     VARCHAR(30) DEFAULT 'Joan',
-LASTNAME      VARCHAR(28) DEFAULT 'Chen' key,
+FIRSTNAME     VARCHAR(30) DEFAULT 'Joan' INDEX idx_name,
+LASTNAME      VARCHAR(28) DEFAULT 'Chen' key INDEX idx_name INDEX idx_lastname,
 averylonglongfieldname X(1024) DEFAULT 'test',
 price         N(7.2)  DEFAULT '0.00',
-MYDATE        D      DEFDATE,
+MYDATE        D      DEFDATE INDEX idx_date,
 BIGFELLOW     X      NOTNULL,
-TS            T      DEFTIMESTAMP";
+TS_SECS            T      DEFTIMESTAMP,
+TS_SUBSEC   TS DEFTIMESTAMP
+";
 
 
 	$sqla = $dict->CreateDatabase('KUTU',array('postgres'=>"LOCATION='/u01/postdata'"));
 	$dict->SetSchema('KUTU');
 	
 	$sqli = ($dict->CreateTableSQL('testtable',$flds, $opts));
-	$sqla =& array_merge($sqla,$sqli);
+	$sqla = array_merge($sqla,$sqli);
 	
-	$sqli = $dict->CreateIndexSQL('idx','testtable','firstname,lastname',array('BITMAP','FULLTEXT','CLUSTERED','HASH'));
-	$sqla =& array_merge($sqla,$sqli);
+	$sqli = $dict->CreateIndexSQL('idx','testtable','price,firstname,lastname',array('BITMAP','FULLTEXT','CLUSTERED','HASH'));
+	$sqla = array_merge($sqla,$sqli);
 	$sqli = $dict->CreateIndexSQL('idx2','testtable','price,lastname');//,array('BITMAP','FULLTEXT','CLUSTERED'));
-	$sqla =& array_merge($sqla,$sqli);
+	$sqla = array_merge($sqla,$sqli);
 	
 	$addflds = array(array('height', 'F'),array('weight','F'));
 	$sqli = $dict->AddColumnSQL('testtable',$addflds);
-	$sqla =& array_merge($sqla,$sqli);
+	$sqla = array_merge($sqla,$sqli);
 	$addflds = array(array('height', 'F','NOTNULL'),array('weight','F','NOTNULL'));
 	$sqli = $dict->AlterColumnSQL('testtable',$addflds);
-	$sqla =& array_merge($sqla,$sqli);
+	$sqla = array_merge($sqla,$sqli);
 	
 	
 	printsqla($dbType,$sqla);
@@ -102,7 +104,7 @@ TS            T      DEFTIMESTAMP";
 	
 	
 	adodb_pr($dict->databaseType);
-	printsqla($dbType, $dict->DropColumnSQL('table',array('`col`','col2')));
+	printsqla($dbType, $dict->DropColumnSQL('table',array('my col','`col2_with_Quotes`','A_col3','col3(10)')));
 	printsqla($dbType, $dict->ChangeTableSQL('adoxyz','LASTNAME varchar(32)'));
 	
 }
@@ -116,7 +118,7 @@ function printsqla($dbType,$sqla)
 		print "$s;\n";
 		if ($dbType == 'oci8') print "/\n";
 	}
-	print "</pre><hr>";
+	print "</pre><hr />";
 }
 
 /***
