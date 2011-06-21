@@ -36,28 +36,3 @@ Tested on
 
  * RHEL ES3, PHP 4, MySQL 3.23
  * Debian GNU/Linux, PHP4, MySQL 4.1.12
-
-Upgrading
-----------
-
-From > v02.02 to v0.260:
-
-* Simply unzip the tarfile over the existing version
-
-From v02.20 to v0.230 and v0.231:
-
-* Simply unzip the tarfile over the existing v0.220 version
-
-From v02.10 to v0.220:
-
-* Simply unzip the tarfile over the existing v0.210 version
-
-From v0.202 to v0.210:
-
-* Simply unzip the tarfile over the existing v0.201 version
-
-From v0.201 to v0.202:
-
-* Untar the package to a directory
-* Change your include() statements to the new directory
-* Run the  update_0.201_to_0.202.sql script on your freetag database to add the new indexes: <code>mysql -u <username> -p <databasename> <  update_0.201_to_0.202.sql</code>
