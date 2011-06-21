@@ -1118,32 +1118,6 @@ class freetag {
 		return $this->count_tags($tagger_id, $normalized_version);
 	} 
 
-
-	/**
-	 * silly_list
-	 *
-	 * silly_list is now deprecated in favor of using get_tag_cloud_tags. It's still
-	 * available for compatibility. If you're just looking to get a tag cloud going,
-	 * try get_tag_cloud_html().
-	 * 
-	 * This is a function built explicitly to set up a page with most popular tags
-	 * that contains an alphabetically sorted list of tags, which can then be sized
-	 * or colored by popularity.
-	 *
-	 * Also known more popularly as Tag Clouds!
-	 *
-	 * Here's the example case: http://upcoming.org/tag/
-	 *
-	 * @param int The maximum number of tags to return.
-	 *
-	 * @return array Returns an array where the keys are normalized tags, and the
-	 * values are numeric quantity of objects tagged with that tag.
-	 */
-
-	function silly_list($max = 100, $tagger_id = NULL) {
-		return $this->get_tag_cloud_tags($max, $tagger_id);
-	}
-
 	/**
 	 * similar_tags
 	 *
