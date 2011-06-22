@@ -25,10 +25,10 @@
 					</div>
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Freetag API Implementation</p>
-<p class="description"><p>Freetag is a generic PHP class that can hook-in to existing database   schemas and allows tagging of content within a social website. It's fun,   fast, and easy!  Try it today and see what all the folksonomy fuss is   about.</p><p>Contributions and/or donations are welcome.</p><p>Author: Gordon Luk   http://www.getluky.net</p><p>Version: 0.260   Last Updated: Jun 4, 2006</p></p>
+<p class="short-description">Freetag - Simple PHP/MySQL tagging library</p>
+<p class="description"><p>Freetag is a generic PHP class that can hook-in to existing database   schemas and allows tagging of content within a social website. It's fun,   fast, and easy!  Try it today and see what all the folksonomy fuss is   about.</p><p>Contributions welcome.</p><p>http://github.com/freetag</p></p>
 		<p class="notes">
-			Located in <a class="field" href="_freetag_class_php.html">/freetag.class.php</a> (line <span class="field"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a29">29</a></span>)
+			Located in <a class="field" href="_freetag_class_php.html">/freetag.class.php</a> (line <span class="field"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a24">24</a></span>)
 		</p>
 		
 				
@@ -166,9 +166,9 @@
 								
 				<div class="method-definition">
 					<img src="../media/images/Method.png" alt=" "/>
-											<span class="method-result">void</span>
+											<span class="method-result">boolean</span>
 										<a href="#debug_text" title="details" class="method-name">debug_text</a>
-											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$text</span>)
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$text</span>)
 									</div>
 								
 				<div class="method-definition">
@@ -257,9 +257,9 @@
 								
 				<div class="method-definition">
 					<img src="../media/images/Method.png" alt=" "/>
-											<span class="method-result">void</span>
+											<span class="method-result">array</span>
 										<a href="#get_tag_cloud_tags" title="details" class="method-name">get_tag_cloud_tags</a>
-											([<span class="var-type">mixed</span>&nbsp;<span class="var-name">$max</span> = <span class="var-default">100</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$tagger_id</span> = <span class="var-default">NULL</span>], <span class="var-type">mixed</span>&nbsp;<span class="var-name">$offset</span>)
+											([<span class="var-type">int</span>&nbsp;<span class="var-name">$max</span> = <span class="var-default">100</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$tagger_id</span> = <span class="var-default">NULL</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$offset</span>)
 									</div>
 								
 				<div class="method-definition">
@@ -281,13 +281,6 @@
 											<span class="method-result">boolean</span>
 										<a href="#safe_tag" title="details" class="method-name">safe_tag</a>
 											(<span class="var-type">int</span>&nbsp;<span class="var-name">$tagger_id</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$object_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$tag</span>)
-									</div>
-								
-				<div class="method-definition">
-					<img src="../media/images/Method.png" alt=" "/>
-											<span class="method-result">array</span>
-										<a href="#silly_list" title="details" class="method-name">silly_list</a>
-											([<span class="var-type">int</span>&nbsp;<span class="var-name">$max</span> = <span class="var-default">100</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$tagger_id</span> = <span class="var-default">NULL</span>])
 									</div>
 								
 				<div class="method-definition">
@@ -349,7 +342,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_ADODB_DIR</span>
-			 = <span class="var-default"> 'adodb/'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a96">96</a></span>)
+			 = <span class="var-default"> 'adodb/'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a90">90</a></span>)
 		</span>
 	</div>
 
@@ -372,7 +365,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_append_to_integer</span>
-			 = <span class="var-default"> ''</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a81">81</a></span>)
+			 = <span class="var-default"> ''</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a75">75</a></span>)
 		</span>
 	</div>
 
@@ -395,7 +388,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_block_multiuser_tag_on_object</span>
-			 = <span class="var-default"> 1</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a76">76</a></span>)
+			 = <span class="var-default"> 1</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a70">70</a></span>)
 		</span>
 	</div>
 
@@ -418,7 +411,7 @@
 		<span class="var-title">
 			<span class="var-type">ADOConnection</span>
 			<span class="var-name">$_db</span>
-						(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a45">45</a></span>)
+						(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a40">40</a></span>)
 		</span>
 	</div>
 
@@ -441,7 +434,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_db_driver</span>
-			 = <span class="var-default"> 'mysql'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a50">50</a></span>)
+			 = <span class="var-default"> 'mysql'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a45">45</a></span>)
 		</span>
 	</div>
 
@@ -464,7 +457,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_db_host</span>
-			 = <span class="var-default"> 'localhost'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a37">37</a></span>)
+			 = <span class="var-default"> 'localhost'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a32">32</a></span>)
 		</span>
 	</div>
 
@@ -487,7 +480,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_db_name</span>
-			 = <span class="var-default"> 'freetag'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a38">38</a></span>)
+			 = <span class="var-default"> 'freetag'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a33">33</a></span>)
 		</span>
 	</div>
 
@@ -510,7 +503,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_db_pass</span>
-			 = <span class="var-default"> 'changeme'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a36">36</a></span>)
+			 = <span class="var-default"> 'changeme'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a31">31</a></span>)
 		</span>
 	</div>
 
@@ -533,7 +526,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_db_user</span>
-			 = <span class="var-default"> 'changeme'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a35">35</a></span>)
+			 = <span class="var-default"> 'changeme'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a30">30</a></span>)
 		</span>
 	</div>
 
@@ -556,7 +549,7 @@
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$_debug</span>
-			 = <span class="var-default"> FALSE</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a56">56</a></span>)
+			 = <span class="var-default"> FALSE</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a50">50</a></span>)
 		</span>
 	</div>
 
@@ -579,7 +572,7 @@
 		<span class="var-title">
 			<span class="var-type">int</span>
 			<span class="var-name">$_MAX_TAG_LENGTH</span>
-			 = <span class="var-default"> 30</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a91">91</a></span>)
+			 = <span class="var-default"> 30</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a85">85</a></span>)
 		</span>
 	</div>
 
@@ -602,7 +595,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_normalized_valid_chars</span>
-			 = <span class="var-default"> 'a-zA-Z0-9'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a66">66</a></span>)
+			 = <span class="var-default"> 'a-zA-Z0-9'</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a60">60</a></span>)
 		</span>
 	</div>
 
@@ -625,7 +618,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_normalize_tags</span>
-			 = <span class="var-default"> 1</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a71">71</a></span>)
+			 = <span class="var-default"> 1</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a65">65</a></span>)
 		</span>
 	</div>
 
@@ -648,7 +641,7 @@
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$_PCONNECT</span>
-			 = <span class="var-default"> FALSE</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a86">86</a></span>)
+			 = <span class="var-default"> FALSE</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a80">80</a></span>)
 		</span>
 	</div>
 
@@ -671,7 +664,7 @@
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$_table_prefix</span>
-			 = <span class="var-default"> ''</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a61">61</a></span>)
+			 = <span class="var-default"> ''</span>			(line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a55">55</a></span>)
 		</span>
 	</div>
 
@@ -706,7 +699,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Constructor.png" />
-		<span class="method-title">Constructor freetag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a121">121</a></span>)
+		<span class="method-title">Constructor freetag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a115">115</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -734,7 +727,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">count_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a959">959</a></span>)
+		<span class="method-title">count_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a947">947</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -765,7 +758,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">count_unique_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a1117">1117</a></span>)
+		<span class="method-title">count_unique_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a1103">1103</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -798,19 +791,28 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">debug_text</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a1303">1303</a></span>)
+		<span class="method-title">debug_text</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a1262">1262</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Prints debug text if debug is enabled.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Always returns true</li>
+			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result">boolean</span>
 		<span class="method-name">
 			debug_text
 		</span>
-					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$text</span>)
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$text</span>)
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$text</span><span class="var-description">: The text to output</span>			</li>
+				</ul>
 		
 		
 	</div>
@@ -819,7 +821,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">delete_all_object_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a574">574</a></span>)
+		<span class="method-title">delete_all_object_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a567">567</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -850,7 +852,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">delete_all_object_tags_for_user</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a606">606</a></span>)
+		<span class="method-title">delete_all_object_tags_for_user</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a598">598</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -884,7 +886,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">delete_object_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a538">538</a></span>)
+		<span class="method-title">delete_object_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a531">531</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -921,7 +923,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_most_popular_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a854">854</a></span>)
+		<span class="method-title">get_most_popular_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a843">843</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -958,7 +960,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_most_recent_objects</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a907">907</a></span>)
+		<span class="method-title">get_most_recent_objects</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a895">895</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -998,7 +1000,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_objects_with_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a175">175</a></span>)
+		<span class="method-title">get_objects_with_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a169">169</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1038,7 +1040,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_objects_with_tag_all</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a221">221</a></span>)
+		<span class="method-title">get_objects_with_tag_all</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a215">215</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1072,7 +1074,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_objects_with_tag_combo</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a263">263</a></span>)
+		<span class="method-title">get_objects_with_tag_combo</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a257">257</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1112,7 +1114,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_objects_with_tag_id</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a324">324</a></span>)
+		<span class="method-title">get_objects_with_tag_id</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a318">318</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1152,7 +1154,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_raw_tag_id</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a671">671</a></span>)
+		<span class="method-title">get_raw_tag_id</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a662">662</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1183,7 +1185,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_tags_on_object</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a373">373</a></span>)
+		<span class="method-title">get_tags_on_object</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a367">367</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1223,7 +1225,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_tag_cloud_html</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a1011">1011</a></span>)
+		<span class="method-title">get_tag_cloud_html</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a998">998</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1272,19 +1274,35 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_tag_cloud_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a1066">1066</a></span>)
+		<span class="method-title">get_tag_cloud_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a1052">1052</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">get_tag_cloud_tags</p>
+<p class="description"><p>This is a function built explicitly to set up a page with most popular tags  that contains an alphabetically sorted list of tags, which can then be sized  or colored by popularity.</p><p>Also known more popularly as Tag Clouds!</p><p>Here's the example case: http://upcoming.org/tag/</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Returns an array where the keys are normalized tags, and the  values are numeric quantity of objects tagged with that tag.</li>
+			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		<span class="method-result">array</span>
 		<span class="method-name">
 			get_tag_cloud_tags
 		</span>
-					([<span class="var-type">mixed</span>&nbsp;<span class="var-name">$max</span> = <span class="var-default">100</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$tagger_id</span> = <span class="var-default">NULL</span>], <span class="var-type">mixed</span>&nbsp;<span class="var-name">$offset</span>)
+					([<span class="var-type">int</span>&nbsp;<span class="var-name">$max</span> = <span class="var-default">100</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$tagger_id</span> = <span class="var-default">NULL</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$offset</span>)
 			</div>
 	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$max</span><span class="var-description">: The maximum number of tags to return.</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$tagger_id</span><span class="var-description">: The unique ID of the tagger to restrict to (Optional, NULL default)</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$offset</span><span class="var-description">: Specify starting record (default: 0)</span>			</li>
+				</ul>
 		
 		
 	</div>
@@ -1293,7 +1311,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">get_tag_id</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a639">639</a></span>)
+		<span class="method-title">get_tag_id</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a631">631</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1324,7 +1342,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">normalize_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a513">513</a></span>)
+		<span class="method-title">normalize_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a506">506</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1355,7 +1373,7 @@
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">safe_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a427">427</a></span>)
+		<span class="method-title">safe_tag</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a420">420</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1387,43 +1405,12 @@
 		
 		
 	</div>
-<a name="methodsilly_list" id="silly_list"><!-- --></a>
+<a name="methodsimilar_objects" id="similar_objects"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">silly_list</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a1143">1143</a></span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">silly_list</p>
-<p class="description"><p>silly_list is now deprecated in favor of using get_tag_cloud_tags. It's still  available for compatibility. If you're just looking to get a tag cloud going,  try get_tag_cloud_html().</p><p>This is a function built explicitly to set up a page with most popular tags  that contains an alphabetically sorted list of tags, which can then be sized  or colored by popularity.</p><p>Also known more popularly as Tag Clouds!</p><p>Here's the example case: http://upcoming.org/tag/</p></p>
-	<ul class="tags">
-				<li><span class="field">return:</span> Returns an array where the keys are normalized tags, and the  values are numeric quantity of objects tagged with that tag.</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">array</span>
-		<span class="method-name">
-			silly_list
-		</span>
-					([<span class="var-type">int</span>&nbsp;<span class="var-name">$max</span> = <span class="var-default">100</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$tagger_id</span> = <span class="var-default">NULL</span>])
-			</div>
-	
-			<ul class="parameters">
-					<li>
-				<span class="var-type">int</span>
-				<span class="var-name">$max</span><span class="var-description">: The maximum number of tags to return.</span>			</li>
-				</ul>
-		
-		
-	</div>
-<a name="methodsimilar_objects" id="similar_objects"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<img src="../media/images/Method.png" />
-		<span class="method-title">similar_objects</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a1239">1239</a></span>)
+		<span class="method-title">similar_objects</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a1198">1198</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1459,11 +1446,11 @@
 		
 	</div>
 <a name="methodsimilar_tags" id="similar_tags"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">similar_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a1174">1174</a></span>)
+		<span class="method-title">similar_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a1133">1133</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1496,11 +1483,11 @@
 		
 	</div>
 <a name="methodtag_object" id="tag_object"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">tag_object</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a712">712</a></span>)
+		<span class="method-title">tag_object</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a703">703</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1536,11 +1523,11 @@
 		
 	</div>
 <a name="method_parse_tags" id="_parse_tags"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">_parse_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a807">807</a></span>)
+		<span class="method-title">_parse_tags</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a797">797</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1567,11 +1554,11 @@
 		
 	</div>
 <a name="method_tag_object_array" id="_tag_object_array"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<img src="../media/images/Method.png" />
-		<span class="method-title">_tag_object_array</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag_api__freetag.class.php.html#a784">784</a></span>)
+		<span class="method-title">_tag_object_array</span> (line <span class="line-number"><a href="..//__filesource/fsource_freetag__freetag.class.php.html#a775">775</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1609,7 +1596,7 @@
 
 	
 	<p class="notes" id="credit">
-		Documentation generated on Thu,  8 Feb 2007 10:41:09 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.3.0RC3</a>
+		Documentation generated on Tue, 21 Jun 2011 11:56:28 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.3.0RC3</a>
 	</p>
 	</div></body>
 </html>

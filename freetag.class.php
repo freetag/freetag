@@ -1,7 +1,6 @@
 <?php
 /**
- *  Gordon Luk's Freetag - Generalized Open Source Tagging and Folksonomy.
- *  Copyright (C) 2004-2006 Gordon D. Luk <gluk AT getluky DOT net>
+ *  Freetag - Simple PHP/MySQL tagging library
  *
  *  Released under both BSD license and Lesser GPL library license.  Whenever
  *  there is any discrepancy between the two licenses, the BSD license will
@@ -9,20 +8,16 @@
  *
  */
 /**
- *  Freetag API Implementation
+ *  Freetag - Simple PHP/MySQL tagging library
  *
- *  Freetag is a generic PHP class that can hook-in to existing database
+ *  Freetag is a generic PHP class that can hook in to existing database
  *  schemas and allows tagging of content within a social website. It's fun,
  *  fast, and easy!  Try it today and see what all the folksonomy fuss is
  *  about.
  * 
- *  Contributions and/or donations are welcome.
- *
- *  Author: Gordon Luk
- *  http://www.getluky.net
- *  
- *  Version: 0.260
- *  Last Updated: Jun 4, 2006 
+ *  Contributions welcome.
+ * 
+ *  http://github.com/freetag
  * 
  */ 
 
