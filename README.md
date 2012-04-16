@@ -11,18 +11,18 @@ Getting started
 
 Then load the library like this:
 
-```php
-	require_once("freetag/freetag.class.php");
+```
+require_once('freetag/freetag.class.php');
 
-	$freetag_options = array (
-		'db_user' => '<username>',
-		'db_pass' => '<password>',
-		'db_host' => 'localhost',
-		'db_name' => '<databasename>'
-		'table_prefix' => '<prefix>'
-		);
+$freetag_options = array (
+  'db_user' => null,
+  'db_pass' => null,
+  'db_host' => null,
+  'db_name' => null,
+  'table_prefix' => null
+);
 
-	$freetag = new freetag($freetag_options);
+$freetag = new freetag($freetag_options);
 ```
 
 Documentation
